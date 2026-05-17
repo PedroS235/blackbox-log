@@ -486,7 +486,9 @@ impl From<Firmware> for InternalFirmware {
                 major: 4, minor: 5, ..
             }) => Self::Betaflight4_5,
             Firmware::Betaflight(FirmwareVersion {
-                major: 2025, minor: 12, ..
+                major: 2025,
+                minor: 12,
+                ..
             }) => Self::Betaflight2025_12,
             Firmware::Inav(FirmwareVersion { major: 5, .. }) => Self::Inav5,
             Firmware::Inav(FirmwareVersion { major: 6, .. }) => Self::Inav6,

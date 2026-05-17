@@ -391,13 +391,13 @@ impl PartialOrd for Firmware {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct FirmwareVersion {
-    pub major: u8,
+    pub major: u16,
     pub minor: u8,
     pub patch: u8,
 }
 
 impl FirmwareVersion {
-    pub const fn new(major: u8, minor: u8, patch: u8) -> Self {
+    pub const fn new(major: u16, minor: u8, patch: u8) -> Self {
         Self {
             major,
             minor,
@@ -406,11 +406,11 @@ impl FirmwareVersion {
     }
 
     fn parse(s: &str) -> Option<Self> {
-        let mut components = s.splitn(3, '.').map(|s| s.parse().ok());
+        let mut components = s.splitn(3, '.');
 
-        let major = components.next()??;
-        let minor = components.next()??;
-        let patch = components.next()??;
+        let major = components.next()?.parse().ok()?;
+        let minor = components.next()?.parse().ok()?;
+        let patch = components.next()?.parse().ok()?;
 
         Some(Self {
             major,
@@ -456,8 +456,8 @@ impl InternalFirmware {
             Self::Betaflight4_2
             | Self::Betaflight4_3
             | Self::Betaflight4_4
-              Self::Betaflight2025_12
-            | Self::Betaflight4_5 => true,
+            | Self::Betaflight4_5
+            | Self::Betaflight2025_12 => true,
             Self::Inav5 | Self::Inav6 | Self::Inav7 | Self::Inav8 => false,
         }
     }

@@ -260,6 +260,7 @@ fn skip_to_frame(data: &mut Reader) {
 pub(crate) struct MainFrameHistory {
     history: [Option<RawMainFrame>; 2],
     index_new: usize,
+    last_intra: Option<RawMainFrame>,
 }
 
 impl MainFrameHistory {
@@ -269,6 +270,14 @@ impl MainFrameHistory {
 
     fn push(&mut self, frame: RawMainFrame) -> &RawMainFrame {
         self.index_new = self.index_old();
+        if frame.intra {
+            // Betaflight resets both last and lastlast to the I-frame value so
+            // that the first P-frame after the I-frame boundary uses
+            // Average2(I, I) = I as its predictor, matching the encoder.
+            // This fixes issue #164
+            self.history[self.index_old()] = Some(frame.clone());
+            self.last_intra = Some(frame.clone());
+        }
         self.history[self.index_new] = Some(frame);
         self.last().unwrap()
     }
@@ -279,6 +288,10 @@ impl MainFrameHistory {
 
     pub(crate) fn last_last(&self) -> Option<&RawMainFrame> {
         self.history[self.index_old()].as_ref()
+    }
+
+    pub(crate) fn last_intra(&self) -> Option<&RawMainFrame> {
+        self.last_intra.as_ref()
     }
 }
 

@@ -355,7 +355,7 @@ impl Firmware {
         let (fw, is_supported) = match kind.as_deref() {
             Some("betaflight") => (
                 Firmware::Betaflight(version),
-                crate::BETAFLIGHT_SUPPORT.contains(&version),
+                crate::is_supported_betaflight_version(version),
             ),
             Some("inav") => (
                 Firmware::Inav(version),
@@ -760,6 +760,28 @@ fn parse_header<'data>(bytes: &mut Reader<'data>) -> InternalResult<(&'data str,
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn betaflight_2025_12_is_supported() {
+        assert_eq!(
+            Firmware::Betaflight(FirmwareVersion::new(2025, 12, 2)),
+            Firmware::parse("Betaflight 2025.12.2 (79065c96b) STM32F7X2").unwrap()
+        );
+    }
+
+    #[test]
+    fn unmapped_betaflight_4_6_is_rejected() {
+        assert!(matches!(
+            Firmware::parse("Betaflight 4.6.0 (abc123) STM32F7X2"),
+            Err(ParseError::UnsupportedFirmwareVersion(
+                Firmware::Betaflight(FirmwareVersion {
+                    major: 4,
+                    minor: 6,
+                    patch: 0
+                })
+            ))
+        ));
+    }
 
     #[test]
     #[should_panic(expected = "Retry")]

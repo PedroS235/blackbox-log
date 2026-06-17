@@ -295,6 +295,41 @@ impl MainFrameHistory {
     }
 }
 
+#[cfg(test)]
+mod tests {
+    use alloc::vec;
+
+    use super::*;
+
+    fn main_frame(intra: bool, iteration: u32, value: u32) -> RawMainFrame {
+        RawMainFrame {
+            intra,
+            iteration,
+            time: u64::from(iteration),
+            values: vec![value],
+        }
+    }
+
+    #[test]
+    fn intra_frames_keep_separate_intra_and_inter_history() {
+        let mut history = MainFrameHistory::default();
+
+        history.push(main_frame(true, 10, 100));
+        history.push(main_frame(false, 11, 101));
+        history.push(main_frame(false, 12, 102));
+
+        assert_eq!(Some(12), history.last().map(|frame| frame.iteration));
+        assert_eq!(Some(11), history.last_last().map(|frame| frame.iteration));
+        assert_eq!(Some(10), history.last_intra().map(|frame| frame.iteration));
+
+        history.push(main_frame(true, 20, 200));
+
+        assert_eq!(Some(20), history.last().map(|frame| frame.iteration));
+        assert_eq!(Some(20), history.last_last().map(|frame| frame.iteration));
+        assert_eq!(Some(20), history.last_intra().map(|frame| frame.iteration));
+    }
+}
+
 #[derive(Debug)]
 enum InternalFrame {
     Event(Event),

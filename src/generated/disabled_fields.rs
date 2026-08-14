@@ -139,44 +139,60 @@ impl FieldGroup {
     const fn from_bit(bit: u32, fw: crate::headers::InternalFirmware) -> Option<Self> {
         use crate::headers::InternalFirmware::*;
         match (bit, fw) {
-            (0u32, Betaflight2025_12 | Betaflight4_3 | Betaflight4_4 | Betaflight4_5) => {
-                Some(Self::Pid)
-            }
-            (1u32, Betaflight2025_12 | Betaflight4_3 | Betaflight4_4 | Betaflight4_5) => {
-                Some(Self::RcCommands)
-            }
-            (2u32, Betaflight2025_12 | Betaflight4_3 | Betaflight4_4 | Betaflight4_5) => {
-                Some(Self::Setpoint)
-            }
-            (3u32, Betaflight2025_12 | Betaflight4_3 | Betaflight4_4 | Betaflight4_5) => {
-                Some(Self::Battery)
-            }
-            (4u32, Betaflight2025_12 | Betaflight4_3 | Betaflight4_4 | Betaflight4_5) => {
-                Some(Self::Mag)
-            }
-            (5u32, Betaflight2025_12 | Betaflight4_3 | Betaflight4_4 | Betaflight4_5) => {
-                Some(Self::Altitude)
-            }
-            (6u32, Betaflight2025_12 | Betaflight4_3 | Betaflight4_4 | Betaflight4_5) => {
-                Some(Self::Rssi)
-            }
-            (7u32, Betaflight2025_12 | Betaflight4_3 | Betaflight4_4 | Betaflight4_5) => {
-                Some(Self::Gyro)
-            }
-            (8u32, Betaflight2025_12) => Some(Self::Attitude),
+            (
+                0u32,
+                Betaflight2025_12 | Betaflight2026_6 | Betaflight4_3 | Betaflight4_4
+                | Betaflight4_5,
+            ) => Some(Self::Pid),
+            (
+                1u32,
+                Betaflight2025_12 | Betaflight2026_6 | Betaflight4_3 | Betaflight4_4
+                | Betaflight4_5,
+            ) => Some(Self::RcCommands),
+            (
+                2u32,
+                Betaflight2025_12 | Betaflight2026_6 | Betaflight4_3 | Betaflight4_4
+                | Betaflight4_5,
+            ) => Some(Self::Setpoint),
+            (
+                3u32,
+                Betaflight2025_12 | Betaflight2026_6 | Betaflight4_3 | Betaflight4_4
+                | Betaflight4_5,
+            ) => Some(Self::Battery),
+            (
+                4u32,
+                Betaflight2025_12 | Betaflight2026_6 | Betaflight4_3 | Betaflight4_4
+                | Betaflight4_5,
+            ) => Some(Self::Mag),
+            (
+                5u32,
+                Betaflight2025_12 | Betaflight2026_6 | Betaflight4_3 | Betaflight4_4
+                | Betaflight4_5,
+            ) => Some(Self::Altitude),
+            (
+                6u32,
+                Betaflight2025_12 | Betaflight2026_6 | Betaflight4_3 | Betaflight4_4
+                | Betaflight4_5,
+            ) => Some(Self::Rssi),
+            (
+                7u32,
+                Betaflight2025_12 | Betaflight2026_6 | Betaflight4_3 | Betaflight4_4
+                | Betaflight4_5,
+            ) => Some(Self::Gyro),
+            (8u32, Betaflight2025_12 | Betaflight2026_6) => Some(Self::Attitude),
             (8u32, Betaflight4_3 | Betaflight4_4 | Betaflight4_5) => Some(Self::Acc),
-            (9u32, Betaflight2025_12) => Some(Self::Acc),
+            (9u32, Betaflight2025_12 | Betaflight2026_6) => Some(Self::Acc),
             (9u32, Betaflight4_3 | Betaflight4_4 | Betaflight4_5) => Some(Self::DebugLog),
-            (10u32, Betaflight2025_12) => Some(Self::DebugLog),
+            (10u32, Betaflight2025_12 | Betaflight2026_6) => Some(Self::DebugLog),
             (10u32, Betaflight4_3 | Betaflight4_4 | Betaflight4_5) => Some(Self::Motor),
-            (11u32, Betaflight2025_12) => Some(Self::Motor),
+            (11u32, Betaflight2025_12 | Betaflight2026_6) => Some(Self::Motor),
             (11u32, Betaflight4_3 | Betaflight4_4 | Betaflight4_5) => Some(Self::Gps),
-            (12u32, Betaflight2025_12) => Some(Self::Gps),
+            (12u32, Betaflight2025_12 | Betaflight2026_6) => Some(Self::Gps),
             (12u32, Betaflight4_5) => Some(Self::Rpm),
-            (13u32, Betaflight2025_12) => Some(Self::Rpm),
+            (13u32, Betaflight2025_12 | Betaflight2026_6) => Some(Self::Rpm),
             (13u32, Betaflight4_5) => Some(Self::GyroUnfiltered),
-            (14u32, Betaflight2025_12) => Some(Self::GyroUnfiltered),
-            (15u32, Betaflight2025_12) => Some(Self::Servo),
+            (14u32, Betaflight2025_12 | Betaflight2026_6) => Some(Self::GyroUnfiltered),
+            (15u32, Betaflight2025_12 | Betaflight2026_6) => Some(Self::Servo),
             _ => None,
         }
     }
@@ -184,45 +200,60 @@ impl FieldGroup {
     const fn to_bit(self, fw: crate::headers::InternalFirmware) -> Option<u32> {
         use crate::headers::InternalFirmware::*;
         match (self, fw) {
-            (Self::Pid, Betaflight2025_12 | Betaflight4_3 | Betaflight4_4 | Betaflight4_5) => {
-                Some(0u32)
-            }
+            (
+                Self::Pid,
+                Betaflight2025_12 | Betaflight2026_6 | Betaflight4_3 | Betaflight4_4
+                | Betaflight4_5,
+            ) => Some(0u32),
             (
                 Self::RcCommands,
-                Betaflight2025_12 | Betaflight4_3 | Betaflight4_4 | Betaflight4_5,
+                Betaflight2025_12 | Betaflight2026_6 | Betaflight4_3 | Betaflight4_4
+                | Betaflight4_5,
             ) => Some(1u32),
-            (Self::Setpoint, Betaflight2025_12 | Betaflight4_3 | Betaflight4_4 | Betaflight4_5) => {
-                Some(2u32)
-            }
-            (Self::Battery, Betaflight2025_12 | Betaflight4_3 | Betaflight4_4 | Betaflight4_5) => {
-                Some(3u32)
-            }
-            (Self::Mag, Betaflight2025_12 | Betaflight4_3 | Betaflight4_4 | Betaflight4_5) => {
-                Some(4u32)
-            }
-            (Self::Altitude, Betaflight2025_12 | Betaflight4_3 | Betaflight4_4 | Betaflight4_5) => {
-                Some(5u32)
-            }
-            (Self::Rssi, Betaflight2025_12 | Betaflight4_3 | Betaflight4_4 | Betaflight4_5) => {
-                Some(6u32)
-            }
-            (Self::Gyro, Betaflight2025_12 | Betaflight4_3 | Betaflight4_4 | Betaflight4_5) => {
-                Some(7u32)
-            }
-            (Self::Attitude, Betaflight2025_12) => Some(8u32),
+            (
+                Self::Setpoint,
+                Betaflight2025_12 | Betaflight2026_6 | Betaflight4_3 | Betaflight4_4
+                | Betaflight4_5,
+            ) => Some(2u32),
+            (
+                Self::Battery,
+                Betaflight2025_12 | Betaflight2026_6 | Betaflight4_3 | Betaflight4_4
+                | Betaflight4_5,
+            ) => Some(3u32),
+            (
+                Self::Mag,
+                Betaflight2025_12 | Betaflight2026_6 | Betaflight4_3 | Betaflight4_4
+                | Betaflight4_5,
+            ) => Some(4u32),
+            (
+                Self::Altitude,
+                Betaflight2025_12 | Betaflight2026_6 | Betaflight4_3 | Betaflight4_4
+                | Betaflight4_5,
+            ) => Some(5u32),
+            (
+                Self::Rssi,
+                Betaflight2025_12 | Betaflight2026_6 | Betaflight4_3 | Betaflight4_4
+                | Betaflight4_5,
+            ) => Some(6u32),
+            (
+                Self::Gyro,
+                Betaflight2025_12 | Betaflight2026_6 | Betaflight4_3 | Betaflight4_4
+                | Betaflight4_5,
+            ) => Some(7u32),
+            (Self::Attitude, Betaflight2025_12 | Betaflight2026_6) => Some(8u32),
             (Self::Acc, Betaflight4_3 | Betaflight4_4 | Betaflight4_5) => Some(8u32),
-            (Self::Acc, Betaflight2025_12) => Some(9u32),
+            (Self::Acc, Betaflight2025_12 | Betaflight2026_6) => Some(9u32),
             (Self::DebugLog, Betaflight4_3 | Betaflight4_4 | Betaflight4_5) => Some(9u32),
-            (Self::DebugLog, Betaflight2025_12) => Some(10u32),
+            (Self::DebugLog, Betaflight2025_12 | Betaflight2026_6) => Some(10u32),
             (Self::Motor, Betaflight4_3 | Betaflight4_4 | Betaflight4_5) => Some(10u32),
-            (Self::Motor, Betaflight2025_12) => Some(11u32),
+            (Self::Motor, Betaflight2025_12 | Betaflight2026_6) => Some(11u32),
             (Self::Gps, Betaflight4_3 | Betaflight4_4 | Betaflight4_5) => Some(11u32),
-            (Self::Gps, Betaflight2025_12) => Some(12u32),
+            (Self::Gps, Betaflight2025_12 | Betaflight2026_6) => Some(12u32),
             (Self::Rpm, Betaflight4_5) => Some(12u32),
-            (Self::Rpm, Betaflight2025_12) => Some(13u32),
+            (Self::Rpm, Betaflight2025_12 | Betaflight2026_6) => Some(13u32),
             (Self::GyroUnfiltered, Betaflight4_5) => Some(13u32),
-            (Self::GyroUnfiltered, Betaflight2025_12) => Some(14u32),
-            (Self::Servo, Betaflight2025_12) => Some(15u32),
+            (Self::GyroUnfiltered, Betaflight2025_12 | Betaflight2026_6) => Some(14u32),
+            (Self::Servo, Betaflight2025_12 | Betaflight2026_6) => Some(15u32),
             _ => None,
         }
     }

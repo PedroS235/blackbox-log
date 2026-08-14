@@ -120,6 +120,8 @@ pub enum Feature {
     RxSerial,
     /// `RX_SPI`
     RxSpi,
+    /// `RX_UDP`
+    RxUdp,
     /// `SERVO_TILT`
     ServoTilt,
     /// `SOFTSERIAL`
@@ -172,6 +174,7 @@ impl crate::units::Flag for Feature {
             Self::RxPpm => "RX_PPM",
             Self::RxSerial => "RX_SERIAL",
             Self::RxSpi => "RX_SPI",
+            Self::RxUdp => "RX_UDP",
             Self::ServoTilt => "SERVO_TILT",
             Self::SoftSerial => "SOFTSERIAL",
             Self::SuperexpoRates => "SUPEREXPO_RATES",
@@ -204,111 +207,125 @@ impl Feature {
         match (bit, fw) {
             (
                 0u32,
-                Betaflight2025_12 | Betaflight4_2 | Betaflight4_3 | Betaflight4_4 | Betaflight4_5,
+                Betaflight2025_12 | Betaflight2026_6 | Betaflight4_2 | Betaflight4_3
+                | Betaflight4_4 | Betaflight4_5,
             ) => Some(Self::RxPpm),
             (0u32, Inav5 | Inav6 | Inav7 | Inav8) => Some(Self::ThrottleVbatCompensation),
+            (1u32, Betaflight2026_6) => Some(Self::RxUdp),
             (1u32, Inav5 | Inav6 | Inav7 | Inav8) => Some(Self::Vbat),
             (
                 2u32,
-                Betaflight2025_12 | Betaflight4_2 | Betaflight4_3 | Betaflight4_4 | Betaflight4_5,
+                Betaflight2025_12 | Betaflight2026_6 | Betaflight4_2 | Betaflight4_3
+                | Betaflight4_4 | Betaflight4_5,
             ) => Some(Self::InflightAccCal),
             (2u32, Inav5 | Inav6 | Inav7 | Inav8) => Some(Self::TxProfileSelection),
             (
                 3u32,
-                Betaflight2025_12 | Betaflight4_2 | Betaflight4_3 | Betaflight4_4 | Betaflight4_5,
+                Betaflight2025_12 | Betaflight2026_6 | Betaflight4_2 | Betaflight4_3
+                | Betaflight4_4 | Betaflight4_5,
             ) => Some(Self::RxSerial),
             (3u32, Inav5 | Inav6 | Inav7 | Inav8) => Some(Self::BatProfileAutoswitch),
             (
                 4u32,
-                Betaflight2025_12 | Betaflight4_2 | Betaflight4_3 | Betaflight4_4 | Betaflight4_5
-                | Inav5 | Inav6,
+                Betaflight2025_12 | Betaflight2026_6 | Betaflight4_2 | Betaflight4_3
+                | Betaflight4_4 | Betaflight4_5 | Inav5 | Inav6,
             ) => Some(Self::MotorStop),
             (4u32, Inav8) => Some(Self::Geozone),
             (
                 5u32,
-                Betaflight2025_12 | Betaflight4_2 | Betaflight4_3 | Betaflight4_4 | Betaflight4_5,
+                Betaflight2025_12 | Betaflight2026_6 | Betaflight4_2 | Betaflight4_3
+                | Betaflight4_4 | Betaflight4_5,
             ) => Some(Self::ServoTilt),
             (
                 6u32,
-                Betaflight2025_12 | Betaflight4_2 | Betaflight4_3 | Betaflight4_4 | Betaflight4_5
-                | Inav5 | Inav6 | Inav7 | Inav8,
+                Betaflight2025_12 | Betaflight2026_6 | Betaflight4_2 | Betaflight4_3
+                | Betaflight4_4 | Betaflight4_5 | Inav5 | Inav6 | Inav7 | Inav8,
             ) => Some(Self::SoftSerial),
             (
                 7u32,
-                Betaflight2025_12 | Betaflight4_2 | Betaflight4_3 | Betaflight4_4 | Betaflight4_5
-                | Inav5 | Inav6 | Inav7 | Inav8,
+                Betaflight2025_12 | Betaflight2026_6 | Betaflight4_2 | Betaflight4_3
+                | Betaflight4_4 | Betaflight4_5 | Inav5 | Inav6 | Inav7 | Inav8,
             ) => Some(Self::Gps),
-            (8u32, Betaflight2025_12) => Some(Self::Opticalflow),
+            (8u32, Betaflight2025_12 | Betaflight2026_6) => Some(Self::Opticalflow),
             (
                 9u32,
-                Betaflight2025_12 | Betaflight4_2 | Betaflight4_3 | Betaflight4_4 | Betaflight4_5,
+                Betaflight2025_12 | Betaflight2026_6 | Betaflight4_2 | Betaflight4_3
+                | Betaflight4_4 | Betaflight4_5,
             ) => Some(Self::RangeFinder),
             (
                 10u32,
-                Betaflight2025_12 | Betaflight4_2 | Betaflight4_3 | Betaflight4_4 | Betaflight4_5
-                | Inav5 | Inav6 | Inav7 | Inav8,
+                Betaflight2025_12 | Betaflight2026_6 | Betaflight4_2 | Betaflight4_3
+                | Betaflight4_4 | Betaflight4_5 | Inav5 | Inav6 | Inav7 | Inav8,
             ) => Some(Self::Telemetry),
             (11u32, Inav5 | Inav6 | Inav7 | Inav8) => Some(Self::CurrentMeter),
             (
                 12u32,
-                Betaflight2025_12 | Betaflight4_2 | Betaflight4_3 | Betaflight4_4 | Betaflight4_5,
+                Betaflight2025_12 | Betaflight2026_6 | Betaflight4_2 | Betaflight4_3
+                | Betaflight4_4 | Betaflight4_5,
             ) => Some(Self::ThreeD),
             (12u32, Inav5 | Inav6 | Inav7 | Inav8) => Some(Self::ReversibleMotors),
             (
                 13u32,
-                Betaflight2025_12 | Betaflight4_2 | Betaflight4_3 | Betaflight4_4 | Betaflight4_5,
+                Betaflight2025_12 | Betaflight2026_6 | Betaflight4_2 | Betaflight4_3
+                | Betaflight4_4 | Betaflight4_5,
             ) => Some(Self::RxParallelPwm),
             (
                 14u32,
-                Betaflight2025_12 | Betaflight4_2 | Betaflight4_3 | Betaflight4_4 | Betaflight4_5,
+                Betaflight2025_12 | Betaflight2026_6 | Betaflight4_2 | Betaflight4_3
+                | Betaflight4_4 | Betaflight4_5,
             ) => Some(Self::RxMsp),
             (
                 15u32,
-                Betaflight2025_12 | Betaflight4_2 | Betaflight4_3 | Betaflight4_4 | Betaflight4_5
-                | Inav5 | Inav6 | Inav7 | Inav8,
+                Betaflight2025_12 | Betaflight2026_6 | Betaflight4_2 | Betaflight4_3
+                | Betaflight4_4 | Betaflight4_5 | Inav5 | Inav6 | Inav7 | Inav8,
             ) => Some(Self::RssiAdc),
             (
                 16u32,
-                Betaflight2025_12 | Betaflight4_2 | Betaflight4_3 | Betaflight4_4 | Betaflight4_5
-                | Inav5 | Inav6 | Inav7 | Inav8,
+                Betaflight2025_12 | Betaflight2026_6 | Betaflight4_2 | Betaflight4_3
+                | Betaflight4_4 | Betaflight4_5 | Inav5 | Inav6 | Inav7 | Inav8,
             ) => Some(Self::LedStrip),
             (
                 17u32,
-                Betaflight2025_12 | Betaflight4_2 | Betaflight4_3 | Betaflight4_4 | Betaflight4_5
-                | Inav5 | Inav6 | Inav7 | Inav8,
+                Betaflight2025_12 | Betaflight2026_6 | Betaflight4_2 | Betaflight4_3
+                | Betaflight4_4 | Betaflight4_5 | Inav5 | Inav6 | Inav7 | Inav8,
             ) => Some(Self::Dashboard),
             (
                 18u32,
-                Betaflight2025_12 | Betaflight4_2 | Betaflight4_3 | Betaflight4_4 | Betaflight4_5,
+                Betaflight2025_12 | Betaflight2026_6 | Betaflight4_2 | Betaflight4_3
+                | Betaflight4_4 | Betaflight4_5,
             ) => Some(Self::Osd),
             (19u32, Inav5 | Inav6 | Inav7 | Inav8) => Some(Self::Blackbox),
             (
                 20u32,
-                Betaflight2025_12 | Betaflight4_2 | Betaflight4_3 | Betaflight4_4 | Betaflight4_5,
+                Betaflight2025_12 | Betaflight2026_6 | Betaflight4_2 | Betaflight4_3
+                | Betaflight4_4 | Betaflight4_5,
             ) => Some(Self::ChannelForwarding),
             (
                 21u32,
-                Betaflight2025_12 | Betaflight4_2 | Betaflight4_3 | Betaflight4_4 | Betaflight4_5
-                | Inav5 | Inav6 | Inav7 | Inav8,
+                Betaflight2025_12 | Betaflight2026_6 | Betaflight4_2 | Betaflight4_3
+                | Betaflight4_4 | Betaflight4_5 | Inav5 | Inav6 | Inav7 | Inav8,
             ) => Some(Self::Transponder),
             (
                 22u32,
-                Betaflight2025_12 | Betaflight4_2 | Betaflight4_3 | Betaflight4_4 | Betaflight4_5
-                | Inav5 | Inav6 | Inav7 | Inav8,
+                Betaflight2025_12 | Betaflight2026_6 | Betaflight4_2 | Betaflight4_3
+                | Betaflight4_4 | Betaflight4_5 | Inav5 | Inav6 | Inav7 | Inav8,
             ) => Some(Self::AirMode),
             (23u32, Inav5 | Inav6 | Inav7 | Inav8) => Some(Self::SuperexpoRates),
             (24u32, Inav5 | Inav6 | Inav7 | Inav8) => Some(Self::Vtx),
             (
                 25u32,
-                Betaflight2025_12 | Betaflight4_2 | Betaflight4_3 | Betaflight4_4 | Betaflight4_5,
+                Betaflight2025_12 | Betaflight2026_6 | Betaflight4_2 | Betaflight4_3
+                | Betaflight4_4 | Betaflight4_5,
             ) => Some(Self::RxSpi),
             (
                 27u32,
-                Betaflight2025_12 | Betaflight4_2 | Betaflight4_3 | Betaflight4_4 | Betaflight4_5,
+                Betaflight2025_12 | Betaflight2026_6 | Betaflight4_2 | Betaflight4_3
+                | Betaflight4_4 | Betaflight4_5,
             ) => Some(Self::EscSensor),
             (
                 28u32,
-                Betaflight2025_12 | Betaflight4_2 | Betaflight4_3 | Betaflight4_4 | Betaflight4_5,
+                Betaflight2025_12 | Betaflight2026_6 | Betaflight4_2 | Betaflight4_3
+                | Betaflight4_4 | Betaflight4_5,
             ) => Some(Self::AntiGravity),
             (28u32, Inav5 | Inav6 | Inav7 | Inav8) => Some(Self::PwmOutputEnable),
             (29u32, Betaflight4_2) => Some(Self::DynamicFilter),
@@ -324,111 +341,125 @@ impl Feature {
         match (self, fw) {
             (
                 Self::RxPpm,
-                Betaflight2025_12 | Betaflight4_2 | Betaflight4_3 | Betaflight4_4 | Betaflight4_5,
+                Betaflight2025_12 | Betaflight2026_6 | Betaflight4_2 | Betaflight4_3
+                | Betaflight4_4 | Betaflight4_5,
             ) => Some(0u32),
             (Self::ThrottleVbatCompensation, Inav5 | Inav6 | Inav7 | Inav8) => Some(0u32),
+            (Self::RxUdp, Betaflight2026_6) => Some(1u32),
             (Self::Vbat, Inav5 | Inav6 | Inav7 | Inav8) => Some(1u32),
             (
                 Self::InflightAccCal,
-                Betaflight2025_12 | Betaflight4_2 | Betaflight4_3 | Betaflight4_4 | Betaflight4_5,
+                Betaflight2025_12 | Betaflight2026_6 | Betaflight4_2 | Betaflight4_3
+                | Betaflight4_4 | Betaflight4_5,
             ) => Some(2u32),
             (Self::TxProfileSelection, Inav5 | Inav6 | Inav7 | Inav8) => Some(2u32),
             (
                 Self::RxSerial,
-                Betaflight2025_12 | Betaflight4_2 | Betaflight4_3 | Betaflight4_4 | Betaflight4_5,
+                Betaflight2025_12 | Betaflight2026_6 | Betaflight4_2 | Betaflight4_3
+                | Betaflight4_4 | Betaflight4_5,
             ) => Some(3u32),
             (Self::BatProfileAutoswitch, Inav5 | Inav6 | Inav7 | Inav8) => Some(3u32),
             (
                 Self::MotorStop,
-                Betaflight2025_12 | Betaflight4_2 | Betaflight4_3 | Betaflight4_4 | Betaflight4_5
-                | Inav5 | Inav6,
+                Betaflight2025_12 | Betaflight2026_6 | Betaflight4_2 | Betaflight4_3
+                | Betaflight4_4 | Betaflight4_5 | Inav5 | Inav6,
             ) => Some(4u32),
             (Self::Geozone, Inav8) => Some(4u32),
             (
                 Self::ServoTilt,
-                Betaflight2025_12 | Betaflight4_2 | Betaflight4_3 | Betaflight4_4 | Betaflight4_5,
+                Betaflight2025_12 | Betaflight2026_6 | Betaflight4_2 | Betaflight4_3
+                | Betaflight4_4 | Betaflight4_5,
             ) => Some(5u32),
             (
                 Self::SoftSerial,
-                Betaflight2025_12 | Betaflight4_2 | Betaflight4_3 | Betaflight4_4 | Betaflight4_5
-                | Inav5 | Inav6 | Inav7 | Inav8,
+                Betaflight2025_12 | Betaflight2026_6 | Betaflight4_2 | Betaflight4_3
+                | Betaflight4_4 | Betaflight4_5 | Inav5 | Inav6 | Inav7 | Inav8,
             ) => Some(6u32),
             (
                 Self::Gps,
-                Betaflight2025_12 | Betaflight4_2 | Betaflight4_3 | Betaflight4_4 | Betaflight4_5
-                | Inav5 | Inav6 | Inav7 | Inav8,
+                Betaflight2025_12 | Betaflight2026_6 | Betaflight4_2 | Betaflight4_3
+                | Betaflight4_4 | Betaflight4_5 | Inav5 | Inav6 | Inav7 | Inav8,
             ) => Some(7u32),
-            (Self::Opticalflow, Betaflight2025_12) => Some(8u32),
+            (Self::Opticalflow, Betaflight2025_12 | Betaflight2026_6) => Some(8u32),
             (
                 Self::RangeFinder,
-                Betaflight2025_12 | Betaflight4_2 | Betaflight4_3 | Betaflight4_4 | Betaflight4_5,
+                Betaflight2025_12 | Betaflight2026_6 | Betaflight4_2 | Betaflight4_3
+                | Betaflight4_4 | Betaflight4_5,
             ) => Some(9u32),
             (
                 Self::Telemetry,
-                Betaflight2025_12 | Betaflight4_2 | Betaflight4_3 | Betaflight4_4 | Betaflight4_5
-                | Inav5 | Inav6 | Inav7 | Inav8,
+                Betaflight2025_12 | Betaflight2026_6 | Betaflight4_2 | Betaflight4_3
+                | Betaflight4_4 | Betaflight4_5 | Inav5 | Inav6 | Inav7 | Inav8,
             ) => Some(10u32),
             (Self::CurrentMeter, Inav5 | Inav6 | Inav7 | Inav8) => Some(11u32),
             (
                 Self::ThreeD,
-                Betaflight2025_12 | Betaflight4_2 | Betaflight4_3 | Betaflight4_4 | Betaflight4_5,
+                Betaflight2025_12 | Betaflight2026_6 | Betaflight4_2 | Betaflight4_3
+                | Betaflight4_4 | Betaflight4_5,
             ) => Some(12u32),
             (Self::ReversibleMotors, Inav5 | Inav6 | Inav7 | Inav8) => Some(12u32),
             (
                 Self::RxParallelPwm,
-                Betaflight2025_12 | Betaflight4_2 | Betaflight4_3 | Betaflight4_4 | Betaflight4_5,
+                Betaflight2025_12 | Betaflight2026_6 | Betaflight4_2 | Betaflight4_3
+                | Betaflight4_4 | Betaflight4_5,
             ) => Some(13u32),
             (
                 Self::RxMsp,
-                Betaflight2025_12 | Betaflight4_2 | Betaflight4_3 | Betaflight4_4 | Betaflight4_5,
+                Betaflight2025_12 | Betaflight2026_6 | Betaflight4_2 | Betaflight4_3
+                | Betaflight4_4 | Betaflight4_5,
             ) => Some(14u32),
             (
                 Self::RssiAdc,
-                Betaflight2025_12 | Betaflight4_2 | Betaflight4_3 | Betaflight4_4 | Betaflight4_5
-                | Inav5 | Inav6 | Inav7 | Inav8,
+                Betaflight2025_12 | Betaflight2026_6 | Betaflight4_2 | Betaflight4_3
+                | Betaflight4_4 | Betaflight4_5 | Inav5 | Inav6 | Inav7 | Inav8,
             ) => Some(15u32),
             (
                 Self::LedStrip,
-                Betaflight2025_12 | Betaflight4_2 | Betaflight4_3 | Betaflight4_4 | Betaflight4_5
-                | Inav5 | Inav6 | Inav7 | Inav8,
+                Betaflight2025_12 | Betaflight2026_6 | Betaflight4_2 | Betaflight4_3
+                | Betaflight4_4 | Betaflight4_5 | Inav5 | Inav6 | Inav7 | Inav8,
             ) => Some(16u32),
             (
                 Self::Dashboard,
-                Betaflight2025_12 | Betaflight4_2 | Betaflight4_3 | Betaflight4_4 | Betaflight4_5
-                | Inav5 | Inav6 | Inav7 | Inav8,
+                Betaflight2025_12 | Betaflight2026_6 | Betaflight4_2 | Betaflight4_3
+                | Betaflight4_4 | Betaflight4_5 | Inav5 | Inav6 | Inav7 | Inav8,
             ) => Some(17u32),
             (
                 Self::Osd,
-                Betaflight2025_12 | Betaflight4_2 | Betaflight4_3 | Betaflight4_4 | Betaflight4_5,
+                Betaflight2025_12 | Betaflight2026_6 | Betaflight4_2 | Betaflight4_3
+                | Betaflight4_4 | Betaflight4_5,
             ) => Some(18u32),
             (Self::Blackbox, Inav5 | Inav6 | Inav7 | Inav8) => Some(19u32),
             (
                 Self::ChannelForwarding,
-                Betaflight2025_12 | Betaflight4_2 | Betaflight4_3 | Betaflight4_4 | Betaflight4_5,
+                Betaflight2025_12 | Betaflight2026_6 | Betaflight4_2 | Betaflight4_3
+                | Betaflight4_4 | Betaflight4_5,
             ) => Some(20u32),
             (
                 Self::Transponder,
-                Betaflight2025_12 | Betaflight4_2 | Betaflight4_3 | Betaflight4_4 | Betaflight4_5
-                | Inav5 | Inav6 | Inav7 | Inav8,
+                Betaflight2025_12 | Betaflight2026_6 | Betaflight4_2 | Betaflight4_3
+                | Betaflight4_4 | Betaflight4_5 | Inav5 | Inav6 | Inav7 | Inav8,
             ) => Some(21u32),
             (
                 Self::AirMode,
-                Betaflight2025_12 | Betaflight4_2 | Betaflight4_3 | Betaflight4_4 | Betaflight4_5
-                | Inav5 | Inav6 | Inav7 | Inav8,
+                Betaflight2025_12 | Betaflight2026_6 | Betaflight4_2 | Betaflight4_3
+                | Betaflight4_4 | Betaflight4_5 | Inav5 | Inav6 | Inav7 | Inav8,
             ) => Some(22u32),
             (Self::SuperexpoRates, Inav5 | Inav6 | Inav7 | Inav8) => Some(23u32),
             (Self::Vtx, Inav5 | Inav6 | Inav7 | Inav8) => Some(24u32),
             (
                 Self::RxSpi,
-                Betaflight2025_12 | Betaflight4_2 | Betaflight4_3 | Betaflight4_4 | Betaflight4_5,
+                Betaflight2025_12 | Betaflight2026_6 | Betaflight4_2 | Betaflight4_3
+                | Betaflight4_4 | Betaflight4_5,
             ) => Some(25u32),
             (
                 Self::EscSensor,
-                Betaflight2025_12 | Betaflight4_2 | Betaflight4_3 | Betaflight4_4 | Betaflight4_5,
+                Betaflight2025_12 | Betaflight2026_6 | Betaflight4_2 | Betaflight4_3
+                | Betaflight4_4 | Betaflight4_5,
             ) => Some(27u32),
             (
                 Self::AntiGravity,
-                Betaflight2025_12 | Betaflight4_2 | Betaflight4_3 | Betaflight4_4 | Betaflight4_5,
+                Betaflight2025_12 | Betaflight2026_6 | Betaflight4_2 | Betaflight4_3
+                | Betaflight4_4 | Betaflight4_5,
             ) => Some(28u32),
             (Self::PwmOutputEnable, Inav5 | Inav6 | Inav7 | Inav8) => Some(28u32),
             (Self::DynamicFilter, Betaflight4_2) => Some(29u32),
